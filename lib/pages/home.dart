@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'web_view_page_gekichumai.dart';
+import 'web_view_page_myaime.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -63,6 +64,17 @@ class HomePage extends StatelessWidget {
                   )
                 ],
               ),
+              Divider(height: 50),
+              Container(
+                padding: EdgeInsets.only(bottom: 10),
+                child: Text("My Aime", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              ),
+              FilledButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebViewPageMyAime()));
+                    },
+                    child: Text("My Aime"),
+                  ),
             ],
           ),
         ),

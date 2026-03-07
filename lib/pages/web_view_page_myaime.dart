@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/navigation_control.dart';
+import '../widgets/menu_webview.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewPageMyAime extends StatefulWidget {
-  const WebViewPageMyAime({super.key, required this.regionVersion, required this.game});
-
-  final String regionVersion;
-  final String game;
+  const WebViewPageMyAime({super.key});
 
   @override
   State<WebViewPageMyAime> createState() => _WebViewPageMyAimeState();
@@ -16,10 +14,30 @@ class WebViewPageMyAime extends StatefulWidget {
 
 class _WebViewPageMyAimeState extends State<WebViewPageMyAime> {
   late final WebViewController controller;
+  var loadingPercentage = 0;
 
   @override
   void initState() {
-    controller = WebViewController()..loadRequest(Uri.parse("https://my-aime.net/en/"));
+    controller = WebViewController()
+      ..setNavigationDelegate(NavigationDelegate(
+        onPageStarted: (url) {
+          setState(() {
+            loadingPercentage = 0;
+          });
+        },
+        onProgress: (progress) {
+          setState(() {
+            loadingPercentage = progress;
+          });
+        },
+        onPageFinished: (url) {
+          setState(() {
+            loadingPercentage = 100;
+          });
+        },
+      ))
+      ..loadRequest(Uri.parse("https://my-aime.net/en/"))
+      ..setJavaScriptMode(JavaScriptMode.unrestricted);
     
     super.initState();
   }
@@ -28,13 +46,22 @@ class _WebViewPageMyAimeState extends State<WebViewPageMyAime> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Test"),
+          title: Text("My Aime"),
           actions: [
-            NavigationControls(controller: controller)
+            NavigationControls(controller: controller),
+            MenuWebview(controller: controller)
           ],
         ),
-        body: WebViewWidget(
-          controller: controller,
+        body: Stack(
+          children: [
+            WebViewWidget(
+              controller: controller,
+            ),
+            if (loadingPercentage < 100)
+              LinearProgressIndicator(
+                value: loadingPercentage / 100,
+              ),
+          ],
         ),
       );
   }

@@ -9,6 +9,9 @@ class SettingsPage extends StatelessWidget {
       appBar: AppBar(
           title: Text("Settings"),
       ),
+      body: Center(
+        child: Text("Coming soon!"),
+      ),
     );
   }
 }
