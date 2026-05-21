@@ -1,5 +1,5 @@
 `(Renaming coming soon)`
-# ArRhyMe(Arcade Rhythm Game) Hub
+# AmuseLink (Amusement-IC Link)
 
 Manage SEGA, Bandai Namco, Konami arcade in one place!\
 Like MyAime, Banapass, e-amusement.
