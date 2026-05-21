@@ -1,5 +1,5 @@
 `(Renaming coming soon)`
-# ARG(Arcade Rhythm Game) Hub
+# ArRhyMe(Arcade Rhythm Game) Hub
 
 Manage SEGA, Bandai Namco, Konami arcade in one place!\
 Like MyAime, Banapass, e-amusement.
