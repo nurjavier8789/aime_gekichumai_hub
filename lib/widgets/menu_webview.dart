@@ -3,12 +3,24 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 enum _MenuOptions {
   clearCookies,
+  findInPage,
+  zoomIn,
+  zoomOut,
 }
 
 class MenuWebview extends StatefulWidget {
-  const MenuWebview({super.key, required this.controller});
+  const MenuWebview({
+    super.key,
+    required this.controller,
+    required this.onZoomIn,
+    required this.onZoomOut,
+    required this.onSearch,
+  });
 
   final WebViewController controller;
+  final VoidCallback onZoomIn;
+  final VoidCallback onZoomOut;
+  final VoidCallback onSearch;
 
   @override
   State<MenuWebview> createState() => _MenuWebviewState();
@@ -24,9 +36,31 @@ class _MenuWebviewState extends State<MenuWebview> {
         switch (value) {
           case _MenuOptions.clearCookies:
             await _onClearCookies();
+            break;
+          case _MenuOptions.findInPage:
+            widget.onSearch();
+            break;
+          case _MenuOptions.zoomIn:
+            widget.onZoomIn();
+            break;
+          case _MenuOptions.zoomOut:
+            widget.onZoomOut();
+            break;
         }
       },
       itemBuilder: (context) => [
+        const PopupMenuItem<_MenuOptions>(
+          value: _MenuOptions.zoomIn,
+          child: Text('Zoom In (+)'),
+        ),
+        const PopupMenuItem<_MenuOptions>(
+          value: _MenuOptions.zoomOut,
+          child: Text('Zoom Out (-)'),
+        ),
+        const PopupMenuItem<_MenuOptions>(
+          value: _MenuOptions.findInPage,
+          child: Text('Find in page'),
+        ),
         const PopupMenuItem<_MenuOptions>(
           value: _MenuOptions.clearCookies,
           child: Text('Clear cookies'),

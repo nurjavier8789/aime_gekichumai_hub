@@ -1,9 +1,9 @@
 name: aime_gekichumai_hub
-description: "Manage MyAime, maimai DX, Chunithm, and O.N.G.E.K.I. in one place!"
+description: "Manage MyAime, e-amusement, BanaPass in one place!"
 
 publish_to: 'none'
 
-version: 2026.03.1-b
+version: 2026.08.1-b
 
 environment:
   sdk: ^3.11.0
@@ -13,7 +13,8 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
-  webview_flutter: ^4.13.1
+  webview_flutter: ^4.14.1
+  shared_preferences: ^2.5.5
 
 dev_dependencies:
   flutter_test:
