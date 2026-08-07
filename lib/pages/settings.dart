@@ -36,8 +36,8 @@ class _SettingsPageState extends State<SettingsPage> {
         final List<dynamic> data = jsonDecode(response.body);
 
         if (data.isNotEmpty) {
-          final latestRelease = data.last; 
-          
+          final latestRelease = data[0];
+
           String latestVersion = latestRelease['tag_name'];
           bool isPreRelease = latestRelease['prerelease']; 
 
