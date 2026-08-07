@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'pages/home.dart';
@@ -9,45 +10,60 @@ import 'pages/bandai_page.dart';
 import 'pages/konami_page.dart';
 
 void main() {
-  runApp(bridge());
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runApp(Bridge());
 }
 
-class bridge extends StatelessWidget {
-  const bridge({super.key});
+class Bridge extends StatelessWidget {
+  const Bridge({super.key});
+
+  static final defaultLightColorScheme = ColorScheme.fromSeed(seedColor: Colors.blue);
+  static final defaultDarkColorScheme = ColorScheme.fromSeed(
+    seedColor: Colors.blue,
+    brightness: Brightness.dark,
+  );
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      themeMode: ThemeMode.system,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: ColorScheme.of(context).onPrimary,
-          brightness: Brightness.light
-        ),
-        useSystemColors: true,
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: ColorScheme.of(context).onPrimary,
-          brightness: Brightness.dark
-        ),
-        useSystemColors: true,
-        useMaterial3: true,
-      ),
-      home: init(),
+    return DynamicColorBuilder(
+      builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+        ColorScheme lightScheme;
+        ColorScheme darkScheme;
+
+        if (lightDynamic != null && darkDynamic != null) {
+          lightScheme = lightDynamic.harmonized();
+          darkScheme = darkDynamic.harmonized();
+        } else {
+          lightScheme = defaultLightColorScheme;
+          darkScheme = defaultDarkColorScheme;
+        }
+
+        return MaterialApp(
+          themeMode: ThemeMode.system,
+          theme: ThemeData(
+            colorScheme: lightScheme,
+            useMaterial3: true,
+          ),
+          darkTheme: ThemeData(
+            colorScheme: darkScheme,
+            useMaterial3: true,
+          ),
+          home: Init(),
+        );
+      },
     );
   }
 }
 
-class init extends StatefulWidget {
-  const init({super.key});
+class Init extends StatefulWidget {
+  const Init({super.key});
 
   @override
-  State<init> createState() => _initState();
+  State<Init> createState() => _InitState();
 }
 
-class _initState extends State<init> {
+class _InitState extends State<Init> {
   int selectedIndex = 0;
 
   void startUpAppCheck() async {

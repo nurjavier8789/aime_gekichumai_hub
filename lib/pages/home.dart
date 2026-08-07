@@ -92,11 +92,22 @@ class HomePage extends StatelessWidget {
                 padding: EdgeInsets.only(bottom: 10),
                 child: Text("Useful Links", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               ),
-              FilledButton(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebViewPageUsefullink(whatdoyouwant: "song_list")));
-                },
-                child: Text("Song list"),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  FilledButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebViewPageUsefullink(whatdoyouwant: "song_list")));
+                    },
+                    child: Text("Song list"),
+                  ),
+                  FilledButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebViewPageUsefullink(whatdoyouwant: "arcade_locator")));
+                    },
+                    child: Text("Arcade Locator"),
+                  ),
+                ],
               ),
             ],
           ),

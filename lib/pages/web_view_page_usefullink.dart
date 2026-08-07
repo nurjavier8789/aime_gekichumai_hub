@@ -37,6 +37,9 @@ class _WebViewPageUsefullinkState extends State<WebViewPageUsefullink> {
     if (widget.whatdoyouwant == "song_list") {
       navigateUri = "https://arcade-songs.zetaraku.dev/";
       titleAppBar = "Arcade songs by zetaraku";
+    } else if (widget.whatdoyouwant == "arcade_locator") {
+      navigateUri = "https://zenius-i-vanisher.com/v5.2/arcades.php";
+      titleAppBar = "Arcade Locator";
     }
 
     controller = WebViewController()
@@ -121,55 +124,71 @@ class _WebViewPageUsefullinkState extends State<WebViewPageUsefullink> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: isSearching
-          ? TextField(
-              controller: searchController,
-              autofocus: true,
-              decoration: const InputDecoration(
-                hintText: 'Find in page...',
-                border: InputBorder.none,
-              ),
-              textInputAction: TextInputAction.search,
-              onSubmitted: (value) => findInPage(false),
-            )
-          : Text(titleAppBar),
-        actions: isSearching 
-        ? [
-          IconButton(
-            icon: const Icon(Icons.keyboard_arrow_up),
-            onPressed: () => findInPage(true),
-          ),
-          IconButton(
-            icon: const Icon(Icons.keyboard_arrow_down),
-            onPressed: () => findInPage(false),
-          ),
-          IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: stopSearch,
-          ),
-        ]
-        : [
-          NavigationControls(controller: controller),
-          MenuWebview(
-            controller: controller,
-            onZoomIn: _zoomIn,
-            onZoomOut: _zoomOut,
-            onSearch: startSearch,
-          ),
-        ],
-      ),
-      body: Stack(
-        children: [
-          WebViewWidget(
-            controller: controller,
-          ),
-          if (loadingPercentage < 100)
-            LinearProgressIndicator(
-              value: loadingPercentage / 100,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+
+        if (await controller.canGoBack()) {
+          await controller.goBack();
+        } else {
+          if (context.mounted) {
+            Navigator.of(context).pop(result);
+          }
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: isSearching
+            ? TextField(
+                controller: searchController,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  hintText: 'Find in page...',
+                  border: InputBorder.none,
+                ),
+                textInputAction: TextInputAction.search,
+                onSubmitted: (value) => findInPage(false),
+              )
+            : Text(titleAppBar),
+          actions: isSearching 
+          ? [
+            IconButton(
+              icon: const Icon(Icons.keyboard_arrow_up),
+              onPressed: () => findInPage(true),
             ),
-        ],
+            IconButton(
+              icon: const Icon(Icons.keyboard_arrow_down),
+              onPressed: () => findInPage(false),
+            ),
+            IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: stopSearch,
+            ),
+          ]
+          : [
+            NavigationControls(controller: controller),
+            MenuWebview(
+              controller: controller,
+              onZoomIn: _zoomIn,
+              onZoomOut: _zoomOut,
+              onSearch: startSearch,
+            ),
+          ],
+        ),
+        body: Stack(
+          children: [
+            WebViewWidget(
+              controller: controller,
+            ),
+            if (loadingPercentage < 100)
+              LinearProgressIndicator(
+                value: loadingPercentage / 100,
+                borderRadius: BorderRadius.circular(12),
+                minHeight: 6,
+              ),
+          ],
+        ),
       ),
     );
   }

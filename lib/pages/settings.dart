@@ -1,7 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'aboutApp.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -12,6 +19,85 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   late final WebViewController controller;
+
+  Future<void> checkForUpdates(BuildContext context) async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Checking for updates...')),
+    );
+
+    try {
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      String currentVersion = packageInfo.version;
+
+      final url = Uri.parse('https://api.github.com/repos/nurjavier8789/amuse-link/releases');
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+
+        if (data.isNotEmpty) {
+          final latestRelease = data.last; 
+          
+          String latestVersion = latestRelease['tag_name'];
+          bool isPreRelease = latestRelease['prerelease']; 
+
+          if (!mounted) return;
+
+          if (currentVersion != latestVersion) {
+            String status = isPreRelease ? "(Pre-Release/Beta)" : "(Stable)";
+
+            showUpdateDialog(context, "$latestVersion $status", latestRelease['html_url']);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('You\'re using latest version!')),
+            );
+          }
+        }
+      } else {
+        throw Exception('Gagal menghubungi GitHub');
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal mengecek update: $e')),
+      );
+    }
+  }
+
+  void showUpdateDialog(BuildContext context, String newVersion, String urlUpdate) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Update Available!'),
+          content: Text('Version $newVersion is now available. Do you want to update it now?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Later'),
+            ),
+            FilledButton(
+              onPressed: () async {
+                Navigator.pop(context);
+
+                final Uri githubUri = Uri.parse(urlUpdate);
+
+                if (await canLaunchUrl(githubUri)) {
+                  await launchUrl(githubUri, mode: LaunchMode.externalApplication);
+                } else {
+                  if (!context.mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Failed to open browser.')),
+                  );
+                }
+              },
+              child: const Text('Download Now'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Future<void> showZoomDialog() async {
     final prefs = await SharedPreferences.getInstance();
@@ -30,8 +116,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.remove_circle_outline, size: 32),
-                    color: Colors.red,
+                    icon: const Icon(Icons.remove, size: 32),
                     onPressed: () {
                       if (currentZoom > 0.4) {
                         setStateDialog(() {
@@ -45,8 +130,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.add_circle_outline, size: 32),
-                    color: Colors.green,
+                    icon: const Icon(Icons.add, size: 32),
                     onPressed: () {
                       setStateDialog(() {
                         currentZoom += 0.2;
@@ -66,7 +150,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     if (mounted) {
                       Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Pengaturan zoom berhasil disimpan!')),
+                        const SnackBar(content: Text('Zoom level has been saved!')),
                       );
                     }
                   },
@@ -90,10 +174,9 @@ class _SettingsPageState extends State<SettingsPage> {
         child: ListView(
           children: [
             Divider(
-              color: Colors.blueGrey,
               thickness: 2,
             ),
-            ElevatedButton(
+            ElevatedButton.icon(
               onPressed: () async {
                 final cookieManager = WebViewCookieManager();
 
@@ -115,13 +198,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 shadowColor: const Color.fromRGBO(0, 0, 0, 0),
                 shape: LinearBorder(),
               ),
-              child: const Padding(
-                padding: EdgeInsets.all(10),
-                child: Text("Clear Cookies", style: TextStyle(fontSize: 16, fontFamily: "Google Sans")),
+              icon: Icon(Icons.delete, size: 18),
+              label: const Padding(
+                padding: EdgeInsets.all(14),
+                child: Text("Clear Cookies", style: TextStyle(fontSize: 18, fontFamily: "Google Sans")),
               ),
             ),
-            ElevatedButton(
-              onPressed: () async {
+            ElevatedButton.icon(
+              onPressed: () {
                 showZoomDialog();
               },
               style: ElevatedButton.styleFrom(
@@ -130,18 +214,18 @@ class _SettingsPageState extends State<SettingsPage> {
                 shadowColor: const Color.fromRGBO(0, 0, 0, 0),
                 shape: LinearBorder(),
               ),
-              child: const Padding(
-                padding: EdgeInsets.all(10),
-                child: Text("Edit zoom page", style: TextStyle(fontSize: 16, fontFamily: "Google Sans")),
+              icon: Icon(Icons.zoom_in, size: 18),
+              label: const Padding(
+                padding: EdgeInsets.all(14),
+                child: Text("Edit zoom page", style: TextStyle(fontSize: 18, fontFamily: "Google Sans")),
               ),
             ),
             Divider(
-              color: const Color.fromARGB(100, 96, 125, 139),
               thickness: 1,
             ),
-            ElevatedButton(
-              onPressed: () async {
-                // WIP
+            ElevatedButton.icon(
+              onPressed: () {
+                checkForUpdates(context);
               },
               style: ElevatedButton.styleFrom(
                 alignment: Alignment.centerLeft,
@@ -149,9 +233,26 @@ class _SettingsPageState extends State<SettingsPage> {
                 shadowColor: const Color.fromRGBO(0, 0, 0, 0),
                 shape: LinearBorder(),
               ),
-              child: const Padding(
-                padding: EdgeInsets.all(10),
-                child: Text("About", style: TextStyle(fontSize: 16, fontFamily: "Google Sans")),
+              icon: Icon(Icons.new_releases, size: 18),
+              label: const Padding(
+                padding: EdgeInsets.all(14),
+                child: Text("Check for update", style: TextStyle(fontSize: 18, fontFamily: "Google Sans")),
+              ),
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => AboutApp()));
+              },
+              style: ElevatedButton.styleFrom(
+                alignment: Alignment.centerLeft,
+                backgroundColor: const Color.fromRGBO(0, 0, 0, 0),
+                shadowColor: const Color.fromRGBO(0, 0, 0, 0),
+                shape: LinearBorder(),
+              ),
+              icon: Icon(Icons.info_outline, size: 18),
+              label: const Padding(
+                padding: EdgeInsets.all(14),
+                child: Text("About", style: TextStyle(fontSize: 18, fontFamily: "Google Sans")),
               ),
             ),
           ],
