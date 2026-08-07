@@ -48,7 +48,6 @@ class _WebViewPageUsefullinkState extends State<WebViewPageUsefullink> {
           setState(() {
             loadingPercentage = 0;
           });
-          controller.runJavaScript("document.body.style.zoom = '$_zoomLevel';");
         },
         onProgress: (progress) {
           setState(() {
@@ -59,6 +58,7 @@ class _WebViewPageUsefullinkState extends State<WebViewPageUsefullink> {
           setState(() {
             loadingPercentage = 100;
           });
+          controller.runJavaScript("document.body.style.zoom = '$_zoomLevel';");
         },
       ))
       ..loadRequest(Uri.parse(navigateUri))
@@ -139,6 +139,12 @@ class _WebViewPageUsefullinkState extends State<WebViewPageUsefullink> {
       },
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pop();
+            }
+          ),
           title: isSearching
             ? TextField(
                 controller: searchController,

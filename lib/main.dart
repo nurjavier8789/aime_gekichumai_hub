@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'pages/home.dart';
@@ -97,15 +98,31 @@ class _InitState extends State<Init> {
           ],
         ),
         bottomNavigationBar: NavigationBar(
-          destinations: const <Widget>[
+          destinations: <Widget>[
             NavigationDestination(
               icon: Icon(Icons.home_outlined),
               selectedIcon: Icon(Icons.home),
               label: 'Home',
             ),
             NavigationDestination(
-              icon: Icon(Icons.music_note_outlined),
-              selectedIcon: Icon(Icons.music_note),
+              icon: SvgPicture.asset(
+                'assets/icons/myaime_icon.svg',
+                width: 20,
+                height: 20,
+                colorFilter: ColorFilter.mode(
+                  Theme.of(context).colorScheme.onSurfaceVariant,
+                  BlendMode.srcIn,
+                ),
+              ),
+              selectedIcon: SvgPicture.asset(
+                'assets/icons/myaime_icon.svg',
+                width: 20,
+                height: 20,
+                colorFilter: ColorFilter.mode(
+                  Theme.of(context).colorScheme.onSecondaryContainer,
+                  BlendMode.srcIn,
+                ),
+              ),
               label: 'SEGA',
             ),
             NavigationDestination(
@@ -114,8 +131,24 @@ class _InitState extends State<Init> {
               label: 'Bandai',
             ),
             NavigationDestination(
-              icon: Icon(Icons.music_note_outlined),
-              selectedIcon: Icon(Icons.music_note),
+              icon: SvgPicture.asset(
+                'assets/icons/e-amusement_icon.svg',
+                width: 20,
+                height: 20,
+                colorFilter: ColorFilter.mode(
+                  Theme.of(context).colorScheme.onSurfaceVariant,
+                  BlendMode.srcIn,
+                ),
+              ),
+              selectedIcon: SvgPicture.asset(
+                'assets/icons/e-amusement_icon.svg',
+                width: 20,
+                height: 20,
+                colorFilter: ColorFilter.mode(
+                  Theme.of(context).colorScheme.onSecondaryContainer,
+                  BlendMode.srcIn,
+                ),
+              ),
               label: 'Konami',
             ),
             NavigationDestination(

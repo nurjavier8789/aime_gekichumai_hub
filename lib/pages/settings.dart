@@ -198,10 +198,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 shadowColor: const Color.fromRGBO(0, 0, 0, 0),
                 shape: LinearBorder(),
               ),
-              icon: Icon(Icons.delete, size: 18),
+              icon: Icon(Icons.delete, size: 24),
               label: const Padding(
                 padding: EdgeInsets.all(14),
-                child: Text("Clear Cookies", style: TextStyle(fontSize: 18, fontFamily: "Google Sans")),
+                child: Text("Clear Cookies", style: TextStyle(fontSize: 18, fontFamily: "Google Sans", color: Colors.white)),
               ),
             ),
             ElevatedButton.icon(
@@ -214,10 +214,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 shadowColor: const Color.fromRGBO(0, 0, 0, 0),
                 shape: LinearBorder(),
               ),
-              icon: Icon(Icons.zoom_in, size: 18),
+              icon: Icon(Icons.zoom_in, size: 24),
               label: const Padding(
                 padding: EdgeInsets.all(14),
-                child: Text("Edit zoom page", style: TextStyle(fontSize: 18, fontFamily: "Google Sans")),
+                child: Text("Edit zoom page", style: TextStyle(fontSize: 18, fontFamily: "Google Sans", color: Colors.white)),
               ),
             ),
             Divider(
@@ -233,10 +233,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 shadowColor: const Color.fromRGBO(0, 0, 0, 0),
                 shape: LinearBorder(),
               ),
-              icon: Icon(Icons.new_releases, size: 18),
+              icon: Icon(Icons.new_releases, size: 24),
               label: const Padding(
                 padding: EdgeInsets.all(14),
-                child: Text("Check for update", style: TextStyle(fontSize: 18, fontFamily: "Google Sans")),
+                child: Text("Check for update", style: TextStyle(fontSize: 18, fontFamily: "Google Sans", color: Colors.white)),
               ),
             ),
             ElevatedButton.icon(
@@ -249,10 +249,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 shadowColor: const Color.fromRGBO(0, 0, 0, 0),
                 shape: LinearBorder(),
               ),
-              icon: Icon(Icons.info_outline, size: 18),
+              icon: Icon(Icons.info_outline, size: 24),
               label: const Padding(
                 padding: EdgeInsets.all(14),
-                child: Text("About", style: TextStyle(fontSize: 18, fontFamily: "Google Sans")),
+                child: Text("About", style: TextStyle(fontSize: 18, fontFamily: "Google Sans", color: Colors.white)),
               ),
             ),
           ],

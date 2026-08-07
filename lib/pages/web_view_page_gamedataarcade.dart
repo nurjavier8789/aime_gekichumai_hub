@@ -73,7 +73,6 @@ class _WebViewPageGekiChuMaiState extends State<WebViewPageGekiChuMai> {
           setState(() {
             loadingPercentage = 0;
           });
-          controller.runJavaScript("document.body.style.zoom = '$_zoomLevel';");
         },
         onProgress: (progress) {
           setState(() {
@@ -84,6 +83,7 @@ class _WebViewPageGekiChuMaiState extends State<WebViewPageGekiChuMai> {
           setState(() {
             loadingPercentage = 100;
           });
+          controller.runJavaScript("document.body.style.zoom = '$_zoomLevel';");
         },
       ))
       ..loadRequest(Uri.parse(navigateUri))
@@ -165,6 +165,12 @@ class _WebViewPageGekiChuMaiState extends State<WebViewPageGekiChuMai> {
       },
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pop();
+            }
+          ),
           title: isSearching
             ? TextField(
                 controller: searchController,
